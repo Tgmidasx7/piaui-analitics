@@ -880,6 +880,196 @@ body {
 .comparison-table tr:hover td {
   background: rgba(0,255,65,0.02);
 }
+
+/* SPIA CAMERAS */
+.spia-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.cam-box {
+  border: 1px solid var(--border);
+  background: #050505;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.cam-box:hover {
+  border-color: var(--cyan);
+  box-shadow: 0 0 15px rgba(0,240,255,0.2);
+  transform: scale(1.02);
+  z-index: 10;
+}
+
+.cam-header {
+  background: var(--bg-card);
+  padding: 4px 8px;
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.cam-feed {
+  height: 140px;
+  position: relative;
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  color: var(--green-dim);
+  padding: 6px;
+  overflow: hidden;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,65,0.02) 2px, rgba(0,255,65,0.02) 4px);
+}
+
+.cam-feed::before {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 20%;
+  background: linear-gradient(to bottom, transparent, rgba(0,255,65,0.1), transparent);
+  animation: scan 4s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes scan {
+  0% { top: -20%; }
+  100% { top: 120%; }
+}
+
+.cam-text {
+  position: absolute;
+  top: 6px; left: 6px;
+  pointer-events: none;
+  opacity: 0.8;
+  line-height: 1.4;
+}
+
+.cam-overlay {
+  position: absolute;
+  bottom: 6px; right: 6px;
+  text-align: right;
+  color: var(--yellow);
+  text-shadow: 1px 1px 2px #000;
+  pointer-events: none;
+  font-size: 0.6rem;
+}
+
+.cam-target {
+  position: absolute;
+  border: 1px dashed var(--red);
+  box-shadow: inset 0 0 10px rgba(255,0,64,0.2);
+  background: rgba(255,0,64,0.05);
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.cam-target::after {
+  content: 'ALVO';
+  position: absolute;
+  top: -14px;
+  left: -1px;
+  font-size: 0.5rem;
+  color: #fff;
+  background: var(--red);
+  padding: 0 4px;
+}
+
+/* MODAL SPIA - CÂMERA FOCADA */
+.spia-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+.spia-modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+.spia-modal {
+  background: var(--bg-card);
+  border: 1px solid var(--cyan);
+  border-radius: 8px;
+  width: 95%;
+  max-width: 900px;
+  padding: 1.5rem;
+  position: relative;
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transform: scale(0.95);
+  transition: all 0.3s ease;
+}
+.spia-modal-overlay.active .spia-modal {
+  transform: scale(1);
+}
+.spia-modal-close {
+  position: absolute;
+  top: 15px; right: 20px;
+  color: var(--red);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: bold;
+  transition: color 0.2s;
+}
+.spia-modal-close:hover {
+  color: var(--cyan);
+}
+.spia-modal-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 768px) {
+  .spia-modal-content { grid-template-columns: 1fr; }
+}
+.spia-modal-video {
+  height: 350px;
+  background: #050505;
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,65,0.04) 2px, rgba(0,255,65,0.04) 4px);
+}
+.spia-modal-video::before {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 20%;
+  background: linear-gradient(to bottom, transparent, rgba(0,240,255,0.15), transparent);
+  animation: scan 3s linear infinite;
+  pointer-events: none;
+}
+.spia-modal-log {
+  background: #000;
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--green-dim);
+  padding: 10px;
+  overflow-y: auto;
+  height: 350px;
+}
+.spia-modal-log span.alert { color: var(--red); }
+.spia-modal-log span.info { color: var(--cyan); }
 </style>
 </head>
 <body>
@@ -958,6 +1148,7 @@ body {
       <button class="tab-btn" data-tab="edu">🎓 Educacional</button>
       <button class="tab-btn" data-tab="idh">📈 Desenv. Humano</button>
       <button class="tab-btn" data-tab="swot">⚔️ SWOT</button>
+      <button class="tab-btn" data-tab="spia">👁️ SPIA Câmeras</button>
       <button class="tab-btn" data-tab="terminal">💻 Terminal</button>
     </div>
 
@@ -1855,6 +2046,62 @@ body {
       </div>
     </div>
 
+    <!-- TAB: SPIA -->
+    <div class="tab-content" id="tab-spia">
+      <div class="data-section">
+        <div class="section-header">
+          <div class="section-icon">👁️</div>
+          <div>
+            <div class="section-title">SPIA - Sistema Policial Indicativo de Abordagem</div>
+            <div class="section-subtitle">Central de Monitoramento: 30 Nódulos Ativos de Reconhecimento e Vigilância</div>
+          </div>
+        </div>
+
+        <div class="kpi-grid" style="margin-bottom: 1.5rem;">
+          <div class="kpi-card" style="padding: 0.8rem;">
+            <div class="kpi-label">Uptime da Rede</div>
+            <div class="kpi-value" style="font-size: 1.2rem;">99.9%</div>
+          </div>
+          <div class="kpi-card" style="padding: 0.8rem;">
+            <div class="kpi-label">Câmeras Operantes</div>
+            <div class="kpi-value" style="font-size: 1.2rem; color: var(--cyan)">30 / 30</div>
+          </div>
+          <div class="kpi-card" style="padding: 0.8rem;">
+            <div class="kpi-label">Análise Neural</div>
+            <div class="kpi-value" style="font-size: 1.2rem; color: var(--yellow)">PROCESSANDO</div>
+          </div>
+          <div class="kpi-card" style="padding: 0.8rem;">
+            <div class="kpi-label">Ameaças Detectadas</div>
+            <div class="kpi-value" id="threatCounter" style="font-size: 1.2rem; color: var(--red)">0</div>
+          </div>
+        </div>
+
+        <!-- O grid das câmeras será injetado pelo JavaScript -->
+        <div class="spia-grid" id="spiaGrid"></div>
+
+      </div>
+    </div>
+
+    <!-- MODAL SPIA - INTERAÇÃO COM CÂMERA -->
+    <div class="spia-modal-overlay" id="spiaModal">
+      <div class="spia-modal">
+        <div class="spia-modal-close" onclick="closeSPIAModal()">[X] FECHAR</div>
+        <h3 style="color: var(--cyan); font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 0.5rem; letter-spacing: 1px;">
+          <span id="modalCamTitle">CAM-00</span> - <span id="modalCamLoc" style="color: var(--text-primary);">Localização</span>
+        </h3>
+        <div class="spia-modal-content">
+          <div class="spia-modal-video" id="modalVideoFeed">
+            <div class="cam-text" style="font-size: 0.8rem; top: 10px; left: 10px; opacity: 1;" id="modalCamText">> FEED ATIVO...</div>
+            <div class="cam-target" id="modalTarget" style="display:none; border: 2px dashed var(--red);"></div>
+            <div style="position:absolute; bottom:10px; right:10px; color:var(--red); font-family:var(--font-mono); font-size: 0.8rem; animation: blink 1s infinite;">● REC</div>
+          </div>
+          <div class="spia-modal-log" id="modalLogFeed">
+            <div>> INICIANDO LINK DE RASTREIO NEURAL...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- TAB: TERMINAL -->
     <div class="tab-content" id="tab-terminal">
       <div class="data-section">
@@ -2041,6 +2288,8 @@ body {
     });
     if (window._stopMatrix) window._stopMatrix();
     initCharts();
+    initSPIA();
+    startSPIAUpdates();
     startLiveUpdates();
   }, 6200);
 })();
@@ -2109,6 +2358,161 @@ function startLiveUpdates() {
     box.scrollTop = box.scrollHeight;
     tIdx++;
   }, 4000);
+}
+
+// ============ SPIA CAMERAS ============
+let spiaInterval = null;
+let activeModalCamId = null;
+const spiaLocations = [
+  "Av. Frei Serafim", "Ponte Estaiada", "Centro / Praça Rio Branco", 
+  "Dirceu Arcoverde", "BR-316 Sul", "BR-343 Leste", "Av. João XXIII", 
+  "Bairro Marquês", "Parque Piauí", "Mocambinho", "Promorar", "Ponte da Primavera",
+  "Av. Raul Lopes", "Terminal Zoobotânico", "Rua Coelho de Resende"
+];
+
+function initSPIA() {
+  const grid = document.getElementById('spiaGrid');
+  if (!grid) return;
+  
+  let html = '';
+  for(let i=1; i<=30; i++) {
+    const loc = spiaLocations[Math.floor(Math.random()*spiaLocations.length)] + ' - Z' + Math.floor(Math.random()*9+1);
+    // OTIMIZAÇÃO: Interatividade adicionada no clique da câmera chamando o Modal
+    html += `
+      <div class="cam-box" id="cam-${i}" onclick="openSPIAModal(${i}, '${loc}')" style="cursor: pointer;" title="Clique para expandir monitoramento tático">
+        <div class="cam-header">
+          <span><span style="color:var(--cyan)">[ ID:${i.toString().padStart(2, '0')} ]</span> SPIA</span>
+          <span style="color: var(--red)"><span class="status-dot" style="background:var(--red)"></span>REC</span>
+        </div>
+        <div class="cam-feed">
+          <div class="cam-text" id="cam-text-${i}">
+             > STANDBY...<br>
+          </div>
+          <div class="cam-target" id="cam-target-${i}" style="display:none;"></div>
+          <div class="cam-overlay">${loc}<br><span id="cam-time-${i}">--:--:--</span></div>
+        </div>
+      </div>
+    `;
+  }
+  grid.innerHTML = html;
+}
+
+function startSPIAUpdates() {
+  let threatCount = 0;
+  
+  // OTIMIZAÇÃO: Reduzida a taxa de atualização para não quebrar a performance (800ms)
+  spiaInterval = setInterval(() => {
+    // Atualizar o Modal (Sempre verificar o modal independentemente da aba)
+    if(activeModalCamId) {
+        updateModalSim();
+    }
+
+    const spiaTab = document.getElementById('tab-spia');
+    
+    // OTIMIZAÇÃO DE MEMÓRIA CRÍTICA: Se a aba SPIA não estiver aberta e o modal não estiver aberto, aborte as atualizações nas 30 divs! (Previne travamentos)
+    if(!spiaTab.classList.contains('active') && !activeModalCamId) return;
+
+    // 1. Textos: Simulando processamento em 4 câmeras aleatórias
+    for(let i=0; i<4; i++) {
+      const camId = Math.floor(Math.random() * 30) + 1;
+      const textEl = document.getElementById(`cam-text-${camId}`);
+      if(textEl) {
+         const obj = Math.random() > 0.6 ? 'VEÍCULO' : 'PESSOA';
+         const match = (Math.random() * 20 + 80).toFixed(2);
+         const coordX = (Math.random() * 100).toFixed(1);
+         const coordY = (Math.random() * 100).toFixed(1);
+         textEl.innerHTML = `> ANALISANDO...<br>> OBJ: ${obj}<br>> MATCH: ${match}%<br>> COORD: [${coordX}, ${coordY}]`;
+      }
+    }
+
+    // 2. Alvos: Piscar marcações em câmeras da grade
+    if(Math.random() > 0.5) {
+      const camId = Math.floor(Math.random() * 30) + 1;
+      const box = document.getElementById(`cam-target-${camId}`);
+      if(box && box.style.display === 'none') {
+         box.style.display = 'block';
+         box.style.left = Math.floor(Math.random() * 60) + '%';
+         box.style.top = Math.floor(Math.random() * 60) + '%';
+         box.style.width = Math.floor(Math.random() * 30 + 15) + 'px';
+         box.style.height = Math.floor(Math.random() * 30 + 15) + 'px';
+         
+         if(Math.random() > 0.8) {
+           threatCount++;
+           const tc = document.getElementById('threatCounter');
+           if(tc) tc.textContent = threatCount;
+         }
+
+         setTimeout(() => { 
+           if(box) box.style.display = 'none'; 
+         }, 1200);
+      }
+    }
+
+    // 3. Atualizar relógios de todas as câmeras
+    const timeStr = new Date().toLocaleTimeString('pt-BR');
+    for(let i=1; i<=30; i++) {
+      const timeEl = document.getElementById(`cam-time-${i}`);
+      if(timeEl) timeEl.textContent = timeStr;
+    }
+  }, 800); 
+}
+
+// --- CÓDIGOS INTERATIVOS DAS TELAS (MODAL DE EXPANÇÃO) ---
+function openSPIAModal(camId, locationStr) {
+    activeModalCamId = camId;
+    document.getElementById('modalCamTitle').textContent = `CAM-${camId.toString().padStart(2, '0')}`;
+    document.getElementById('modalCamLoc').textContent = locationStr;
+    document.getElementById('spiaModal').classList.add('active');
+    document.getElementById('modalLogFeed').innerHTML = `<div><span style="color:var(--cyan);">[${new Date().toLocaleTimeString('pt-BR')}]</span> > CONEXÃO ESTABELECIDA COM NÓDULO CENTRAL...</div>`;
+}
+
+function closeSPIAModal() {
+    activeModalCamId = null;
+    document.getElementById('spiaModal').classList.remove('active');
+    const target = document.getElementById('modalTarget');
+    if(target) target.style.display = 'none';
+}
+
+function updateModalSim() {
+    const target = document.getElementById('modalTarget');
+    const logFeed = document.getElementById('modalLogFeed');
+    
+    // Simulação intensa de "Tracking" em tela expandida
+    if(Math.random() > 0.4) {
+         target.style.display = 'block';
+         target.style.left = Math.floor(Math.random() * 60 + 5) + '%';
+         target.style.top = Math.floor(Math.random() * 60 + 5) + '%';
+         target.style.width = Math.floor(Math.random() * 60 + 30) + 'px';
+         target.style.height = Math.floor(Math.random() * 60 + 30) + 'px';
+         
+         // Gerar log neural na tela
+         const isThreat = Math.random() > 0.85;
+         const type = Math.random() > 0.5 ? 'Leitura Placa (LPR)' : 'Biometria Facial';
+         const hash = generateHash().slice(0, 10).toUpperCase();
+         const logClass = isThreat ? 'alert' : 'info';
+         const status = isThreat ? 'ALERTA VERMELHO / PROCURADO' : 'VERIFICADO / SEGURO';
+         
+         const logEntry = document.createElement('div');
+         logEntry.style.marginBottom = "8px";
+         logEntry.style.paddingBottom = "4px";
+         logEntry.style.borderBottom = "1px solid rgba(255,255,255,0.05)";
+         logEntry.innerHTML = `<span class="${logClass}">[${new Date().toLocaleTimeString('pt-BR')}]</span> ${type} <br>> HASH: ${hash}<br>> STATUS: <span class="${logClass}">${status}</span>`;
+         
+         logFeed.appendChild(logEntry);
+         
+         // Limitar logs a 30 elementos para não explodir memória/DOM
+         if(logFeed.children.length > 30) {
+             logFeed.removeChild(logFeed.firstChild);
+         }
+         logFeed.scrollTop = logFeed.scrollHeight;
+    } else {
+         target.style.display = 'none';
+    }
+
+    const modalText = document.getElementById('modalCamText');
+    if(modalText) {
+        modalText.innerHTML = `> MODO: TRACKING TÁTICO<br>> LATENCIA: ${Math.floor(Math.random()*15 + 10)}ms<br>> FPS: 29.97<br>> ENCR: AES-256`;
+    }
 }
 
 // ============ TABS ============
